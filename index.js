@@ -2,10 +2,11 @@ const express = require('express');
 const port = require('./env.json').port;
 const app = express();
 const bodyParser = require('body-parser');
-const rateLimit = require('express-rate-limit')
-const connect = require('./functions/mongo')
-const mongo = require('./env.json').mongo
+const rateLimit = require('express-rate-limit');
+const connect = require('./functions/mongo');
+const mongo = require('./env.json').mongo;
 const mongoose = require('mongoose');
+const channelModel = require('./shcemas/channelSchema.js');
 connect(mongo, mongoose);
 
 
@@ -80,11 +81,12 @@ app.get('/api/users/:type/:user', function(req, res){
 */
 app.post('/api/users', function (req, res) {
     let user = req.body.user;
-    users.push(user)
     let header = req.headers
-    let query = req.query
     if(header.key !== "e@#$%^&*(#$%^&*#$%^&ddde#$%^&*;Ds") return res.send("this is owner only post api!")
     if(!user.channel_name || !user.channel_url || !user.channel_videos || !user.discord_id) return res.send("invalid parmeters! \n channel_name or channel_url or channel_videos or discord_id are required!")
+    if(typeof user.channel_name !== 'string' || typeof user.channel_url !== 'string'|| typeof user.discord_id !== 'string' || typeof user.channel_videos !== 'object') return res.send('invalid types of things so idk i dont want it :)')
+    let search = users.find(x => x.discord_id === user.discord_id)
+    if(search) return res.send("user already exists on the api")
 
 
 
@@ -104,4 +106,22 @@ app.get('/qna', function(req, res) {
 
 app.listen(port, function(req, res) {
   console.log(`Server is running at port ${port}`);
+});
+app.use(function(req, res, next) {
+  res.status(404);
+
+  // respond with html page
+  if (req.accepts('html')) {
+    res.render('404', { url: req.url });
+    return;
+  }
+
+  // respond with json
+  if (req.accepts('json')) {
+    res.json({ error: 'Not found' });
+    return;
+  }
+
+  // default to plain-text. send()
+  res.type('txt').send('Not found');
 });

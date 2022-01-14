@@ -9,7 +9,27 @@ const mongoose = require('mongoose');
 const channelModel = require('./shcemas/channelSchema.js');
 connect(mongo, mongoose);
 
+let channelMod = channelModel.findOne({
+  "user": []
+})
+if(channelMod) {
+  
+} else {
+let sus = new channelModel({
+  "user": [{
+    "channel_url": "test channel",
+    "discord_id": "69420",
+    "channel_name": "test",
+    "channel_videos": [{
+        "video_url": "",
+        "video_title": "",
+        "video_thumbnail": ""
+    }]
+}]
 
+})
+sus.save()
+}
 const apiLimiter = rateLimit({
 	windowMs: 1 * 60 * 1000, 
 	max: 20,
@@ -57,7 +77,7 @@ app.get('/api/users/:type/:user', function(req, res){
     discord_id: users.find(x => x.discord_id === user),
   }
   if(search[type]) {
-    return res.json(search)
+    return res.json(search[type])
   } else {
     return res.json({
       "error": {

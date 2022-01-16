@@ -7,29 +7,18 @@ const connect = require('./functions/mongo');
 const mongo = require('./env.json').mongo;
 const mongoose = require('mongoose');
 const channelModel = require('./shcemas/channelSchema.js');
+let bigyes = async () => {
+let findid = "61e305438aa7159e05799163"
 connect(mongo, mongoose);
+console.log(await channelModel.find())
+let users
+new channelModel({
+  "channel_url": "dwadawd",
+  "discord_id": "69420",
+  "channel_name": "test",
+  "channel_videos": []
+})//.save()
 
-let channelMod = channelModel.findOne({
-  "user": []
-})
-if(channelMod) {
-  
-} else {
-let sus = new channelModel({
-  "user": [{
-    "channel_url": "test channel",
-    "discord_id": "69420",
-    "channel_name": "test",
-    "channel_videos": [{
-        "video_url": "",
-        "video_title": "",
-        "video_thumbnail": ""
-    }]
-}]
-
-})
-sus.save()
-}
 const apiLimiter = rateLimit({
 	windowMs: 1 * 60 * 1000, 
 	max: 20,
@@ -46,35 +35,26 @@ const apiLimiter = rateLimit({
 // Apply the rate limiting middleware to API calls only
 app.use('/api', apiLimiter)
 
-let users = [{
-    "channel_url": "ee",
-    "discord_id": "2",
-    "channel_name": "test",
-    "channel_videos": [{
-        "video_url": "",
-        "video_title": "",
-        "video_thumbnail": ""
-    }]
-}];
+
+
+
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 // GET /api/users
-app.get('/api/users/:type', function(req, res){
-  let type = req.params.type
-  switch(type) {
-    case "all":
-      return res.json(users)
-  }
+app.get('/api/users/all', async function(req, res){
+return res.json(await channelModel.find())
 })
-app.get('/api/users/:type/:user', function(req, res){
+app.get('/api/users/:type/:user', async function(req, res){
+  let smts = await channelModel.findById(findid)
+  let userss = smts.user
   let type = req.params.type
   let user = req.params.user
   let search = {
-    channel_name: users.find(x => x.channel_name === user),
-    channel_url: users.find(x => x.channel_url === user),
-    discord_id: users.find(x => x.discord_id === user),
+    channel_name: userss.find(x => x.channel_name === user),
+    channel_url: userss.find(x => x.channel_url === user),
+    discord_id: userss.find(x => x.discord_id === user),
   }
   if(search[type]) {
     return res.json(search[type])
@@ -89,6 +69,7 @@ app.get('/api/users/:type/:user', function(req, res){
 });
 
 
+
 /* POST /api/users
     {
         "user": {
@@ -99,18 +80,29 @@ app.get('/api/users/:type/:user', function(req, res){
         }
     }
 */
-app.post('/api/users', function (req, res) {
+app.post('/api/post/channel', async function (req, res) {
     let user = req.body.user;
     let header = req.headers
     if(header.key !== "e@#$%^&*(#$%^&*#$%^&ddde#$%^&*;Ds") return res.send("this is owner only post api!")
-    if(!user.channel_name || !user.channel_url || !user.channel_videos || !user.discord_id) return res.send("invalid parmeters! \n channel_name or channel_url or channel_videos or discord_id are required!")
-    if(typeof user.channel_name !== 'string' || typeof user.channel_url !== 'string'|| typeof user.discord_id !== 'string' || typeof user.channel_videos !== 'object') return res.send('invalid types of things so idk i dont want it :)')
-    let search = users.find(x => x.discord_id === user.discord_id)
+    if(!user.channel_name ||
+       !user.channel_url || 
+       !user.channel_videos ||
+       !user.discord_id) return res.send("invalid parmeters! \n channel_name or channel_url or channel_videos or discord_id are required!")
+    if(typeof user.channel_name !== 'string' || 
+       typeof user.channel_url !== 'string'|
+       typeof user.discord_id !== 'string' ||
+       typeof user.channel_videos !== 'object') return res.send('invalid types of things so idk i dont want it :)')
+    let search = await channelModel.findOne({
+      discord_id: user.discord_id
+    })
     if(search) return res.send("user already exists on the api")
-
-
-
-    users.push(user)
+    new channelModel({
+      "_id": false,
+      "channel_url": user.channel_url,
+      "discord_id": user.discord_id,
+      "channel_name": user.channel_name,
+      "channel_videos": []
+    }).save()
     return res.send('Channel has been added successfully');
 });
 
@@ -145,3 +137,5 @@ app.use(function(req, res, next) {
   // default to plain-text. send()
   res.type('txt').send('Not found');
 });
+}
+bigyes();

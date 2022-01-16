@@ -1,10 +1,10 @@
 const express = require('express');
-const port = require('./env.json').port;
+const port = require('./env').port;
 const app = express();
 const bodyParser = require('body-parser');
 const rateLimit = require('express-rate-limit');
 const connect = require('./functions/mongo');
-const mongo = require('./env.json').mongo;
+const mongo = require('./env').mongo;
 const mongoose = require('mongoose');
 const channelModel = require('./shcemas/channelSchema.js');
 let bigyes = async () => {
@@ -87,19 +87,18 @@ app.post('/api/post/channel', async function (req, res) {
     if(!user.channel_name ||
        !user.channel_url || 
        !user.channel_videos ||
-       !user.discord_id) return res.send("invalid parmeters! \n channel_name or channel_url or channel_videos or discord_id are required!")
+       !user._id) return res.send("invalid parmeters! \n channel_name or channel_url or channel_videos or discord_id are required!")
     if(typeof user.channel_name !== 'string' || 
        typeof user.channel_url !== 'string'|
-       typeof user.discord_id !== 'string' ||
+       typeof user._id !== 'string' ||
        typeof user.channel_videos !== 'object') return res.send('invalid types of things so idk i dont want it :)')
     let search = await channelModel.findOne({
-      discord_id: user.discord_id
+      _id: user._id
     })
     if(search) return res.send("user already exists on the api")
     new channelModel({
-      "_id": false,
       "channel_url": user.channel_url,
-      "discord_id": user.discord_id,
+      "_id": user.discord_id,
       "channel_name": user.channel_name,
       "channel_videos": []
     }).save()

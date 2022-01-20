@@ -1,22 +1,22 @@
 const express = require('express');
-const port = require('./env.js').port;
+const { port, key, mongo, token } = require('./env.js')
 const app = express();
 const bodyParser = require('body-parser');
 const rateLimit = require('express-rate-limit');
 const connect = require('./functions/mongo');
-const mongo = require('./env').mongo;
 const mongoose = require('mongoose');
 const channelModel = require('./shcemas/channelSchema.js');
-let bigyes = async () => {
-let findid = "61e305438aa7159e05799163"
+const banModel = require('./shcemas/bannedUsers.js');
+const axios = require('axios');
+const banID = '61e835c662c9ee839f5962c8'
+const bigyes = async () => {
 connect(mongo, mongoose);
 console.log(await channelModel.find())
-new channelModel({
-  "channel_url": "dwadawd",
-  "_id": "69s42s0",
-  "channel_name": "test",
-  "channel_videos": []
-})//.save()
+
+
+
+
+
 
 const apiLimiter = rateLimit({
 	windowMs: 1 * 60 * 1000, 
@@ -30,7 +30,7 @@ const apiLimiter = rateLimit({
     }
   }
 })
-
+//https://discord.com/api/v9/users/${id} url to get a user id
 // Apply the rate limiting middleware to API calls only
 app.use('/api', apiLimiter)
 
@@ -41,7 +41,8 @@ app.set('json spaces', 2)
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-// GET /api/users
+
+
 app.get('/api/users/all', async function(req, res){
 return res.json(await channelModel.find())
 })
@@ -82,7 +83,7 @@ app.post('/api/post/channel', async function (req, res) {
     let regexCHN = new RegExp("(https?:\/\/)?(www\.)?youtu((\.be)|(be\..{2,5}))\/((user)|(channel))\/");
     let user = req.body.user;
     let header = req.headers
-    if(header.key !== "e@#$%^&*(#$%^&*#$%^&ddde#$%^&*;Ds") return res.send({
+    if(header.key !== key) return res.send({
       "error": {
         "message": "OWNER_ONLY",
         "code": "none"
@@ -146,7 +147,7 @@ app.post('/api/post/video', async function (req, res) {
   let regexVID = new RegExp("^((?:https?:)?\/\/)?((?:www|m)\.)?((?:youtube\.com|youtu.be))(\/(?:[\w\-]+\?v=|embed\/|v\/)?)([\w\-]+)(\S+)?");
   let video = req.body.video;
   let header = req.headers;
-  if(header.key !== "e@#$%^&*(#$%^&*#$%^&ddde#$%^&*;Ds") return res.send({
+  if(header.key !== key) return res.send({
     "error": {
       "message": "OWNER_ONLY",
       "code": "none"
@@ -199,7 +200,41 @@ app.post('/api/post/video', async function (req, res) {
     }
   });
 });
+app.post('/api/post/ban/', async function (req, res) {
+  let header = req.headers;
 
+  if(isNaN(header.id.replace("-id", ""))) return res.send({
+    "error": {
+      "message": "USER_ID_MUST_BE_NUMBER",
+      "code": "400"
+    }
+  });
+  // if(header.id.length < 19 || header.id.length > 19) return res.send({
+  //   "error": {
+  //     "message": "ID_IS_NOT_VALID",
+  //     "code": "400"
+  //   }
+  // });
+  if(header.key != key) return res.send({
+    "error": {
+      "message": "OWNER_ONLY",
+      "code": "none"
+    }
+  });
+  await banModel.findByIdAndUpdate(banID, {
+    $addToSet: { "bannedUsers": header.id}
+  });
+  return res.send({
+    "success": {
+      "message": "ADDED_USER_TO_BANS",
+      "code": "201"
+    }
+  });
+});
+app.get('/api/bans/', async function(req, res) {
+  let arr = await banModel.find()
+  return res.json({ bannedUsers: arr[0].bannedUsers})
+});
 app.set('view engine', 'ejs');
 
 app.get('/', function(req, res) {

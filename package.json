@@ -1,7 +1,6 @@
 {
   "name": "s4d-api",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -27,5 +26,15 @@
   },
   "devDependencies": {
     "nodemon": "^2.0.15"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mrredo/s4d-api.git"
+  },
+  "keywords": [],
+  "bugs": {
+    "url": "https://github.com/mrredo/s4d-api/issues"
+  },
+  "homepage": "https://github.com/mrredo/s4d-api#readme",
+  "description": ""
 }

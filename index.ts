@@ -1,12 +1,12 @@
-const express = require('express');
-const { port, key, mongo, token } = require('./env.js')
-const app = express();
-const bodyParser = require('body-parser');
-const rateLimit = require('express-rate-limit');
-const connect = require('./functions/mongo');
+import express from 'express';
+const { port, key, mongo } = require('./env.ts')
+const app: express.Application = express();
+const bodyParser = require('body-parser')
+const rateLimit = require('express-rate-limit')
+import connect from './functions/mongo'
 const mongoose = require('mongoose');
-const channelModel = require('./shcemas/channelSchema.js');
-const banModel = require('./shcemas/bannedUsers.js');
+const channelModel = require('./shcemas/channelSchema.ts');
+const banModel = require('./shcemas/bannedUsers.ts');
 const axios = require('axios');
 const banID = '61e835c662c9ee839f5962c8'
 const bigyes = async () => {
@@ -50,10 +50,10 @@ app.get('/api/users/:type/:user', async function(req, res){
   let type = req.params.type
   let user = req.params.user
   let array = await channelModel.find()
-  let search = {
-    channel_name: array.find(x => x.channel_name === user),
-    channel_url: array.find(x => x.channel_url === user),
-    discord_id: array.find(x => x._id === user),
+  let search: any = {
+    channel_name: array.find((x: any) => x.channel_name === user),
+    channel_url: array.find((x: any) => x.channel_url === user),
+    discord_id: array.find((x: any) => x._id === user),
   }
   if(search[type]) {
     return res.json(search[type])
@@ -99,7 +99,7 @@ app.post('/api/post/channel', async function (req, res) {
          }
        });
     if(typeof user.channel_name !== 'string' || 
-       typeof user.channel_url !== 'string'|
+       typeof user.channel_url !== 'string'||
        typeof user.discord_id !== 'string' ||
        typeof user.channel_videos !== 'object') return res.send({
         "error": {
@@ -200,29 +200,42 @@ app.post('/api/post/video', async function (req, res) {
     }
   });
 });
-app.post('/api/post/ban/', async function (req, res) {
-  let header = req.headers;
 
-  if(isNaN(header.id.replace("-id", ""))) return res.send({
-    "error": {
-      "message": "USER_ID_MUST_BE_NUMBER",
-      "code": "400"
-    }
-  });
-  // if(header.id.length < 19 || header.id.length > 19) return res.send({
-  //   "error": {
-  //     "message": "ID_IS_NOT_VALID",
-  //     "code": "400"
-  //   }
-  // });
+
+
+
+app.post('/api/post/ban/:user/', async function (req, res) {
+  let header: any = req.headers;
+  let user: string = req.params.user
+  let idregex = new RegExp("[0-9]\d{17,18}")
   if(header.key != key) return res.send({
     "error": {
       "message": "OWNER_ONLY",
       "code": "none"
     }
   });
+  if(isNaN(Number(user))) return res.send({
+    "error": {
+      "message": "USER_ID_MUST_BE_NUMBER",
+      "code": "400"
+    }
+  });
+  if(idregex.test(user)) return res.send({
+    "error": {
+      "message": "ID_IS_NOT_VALID",
+      "code": "400"
+    }
+  });
+  let userGet = await banModel.findById(banID)
+  let search = userGet.bannedUsers.find((x: any) => x == user)
+  if(search) return res.send({
+    "error": {
+      "message": "BANNED_USER_ALREADY_EXISTS",
+      "code": "409"
+    }
+  })
   await banModel.findByIdAndUpdate(banID, {
-    $addToSet: { "bannedUsers": header.id}
+    $addToSet: { "bannedUsers": user}
   });
   return res.send({
     "success": {
@@ -231,9 +244,52 @@ app.post('/api/post/ban/', async function (req, res) {
     }
   });
 });
+
+app.delete('/api/delete/users/channel/:channel/', async (req, res) => {
+  let header: any = req.headers;
+  let user: string = req.params.channel;
+  let idregex = new RegExp("[0-9]\d{17,18}")
+  if(header.key != key) return res.send({
+    "error": {
+      "message": "OWNER_ONLY",
+      "code": "none"
+    }
+  });
+  if(isNaN(Number(user))) return res.send({
+    "error": {
+      "message": "USER_ID_MUST_BE_NUMBER",
+      "code": "400"
+    }
+  });
+  if(idregex.test(user) == false) return res.send({
+    "error": {
+      "message": "ID_IS_NOT_VALID",
+      "code": "409"
+    }
+  });
+  let search = await channelModel.findOne({
+    _id: user
+  });
+  if(!search) return res.send({
+    "error": {
+      "message": "CHANNEL_NOT_FOUND",
+      "code": "404"
+    }
+  });
+  await channelModel.findOneAndRemove({
+    _id: user
+  });
+  return res.send({
+    "success": {
+      "message": "REMOVED_USER_FROM_API",
+      "code": "201"
+    }
+  });
+});
+
 app.get('/api/bans/', async function(req, res) {
   let arr = await banModel.find()
-  return res.json({ bannedUsers: arr[0].bannedUsers})
+  return res.json({ bannedUsers: arr[0].bannedUsers} || [])
 });
 app.set('view engine', 'ejs');
 
@@ -248,8 +304,8 @@ app.get('/rules', function(req, res) {
 });
 
 
-app.listen(port, function(req, res) {
-  console.log(`Server is running at port ${port}`);
+app.listen(port, () => {
+  console.log(`Server is listing on port ${port}`);
 });
 app.use(function(req, res, next) {
   res.status(404);

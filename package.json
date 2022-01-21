@@ -4,7 +4,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "devStart": "nodemon"
+    "dev": "nodemon index.ts",
+    "start": "ts-node --fast ./server.ts"
   },
   "author": "",
   "license": "ISC",
@@ -12,6 +13,7 @@
     "@discordjs/rest": "^0.2.0-canary.0",
     "axios": "^0.25.0",
     "chalk": "^5.0.0",
+    "cors": "^2.8.5",
     "curl": "^0.1.4",
     "discord-api-types": "^0.26.1",
     "dotenv": "^10.0.0",
@@ -20,12 +22,20 @@
     "express-markdown": "^0.0.6",
     "express-markdown-reloaded": "^0.2.4",
     "express-rate-limit": "^6.0.5",
+    "express-winston": "^4.0.5",
     "marked": "^4.0.9",
     "mongoose": "^6.1.6",
-    "node-markdown": "^0.1.1"
+    "node-markdown": "^0.1.1",
+    "winston": "^3.3.3"
   },
   "devDependencies": {
-    "nodemon": "^2.0.15"
+    "@types/cors": "^2.8.7",
+    "@types/debug": "^4.1.5",
+    "@types/express": "^4.17.13",
+    "nodemon": "^2.0.15",
+    "source-map-support": "^0.5.16",
+    "tslint": "^6.0.0",
+    "typescript": "^3.7.5"
   },
   "repository": {
     "type": "git",

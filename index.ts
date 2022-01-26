@@ -7,12 +7,13 @@ import connect from './functions/mongo'
 const mongoose = require('mongoose');
 const channelModel = require('./shcemas/channelSchema.ts');
 const banModel = require('./shcemas/bannedUsers.ts');
-const axios = require('axios');
+const result = require('./functions/errorWarning.ts');
+const randomInt = require('./functions/randomInt.ts');
 const banID = '61e835c662c9ee839f5962c8'
 const bigyes = async () => {
 connect(mongo, mongoose);
 console.log(await channelModel.find())
-
+console.log(await channelModel.find().sort({reputation: -1}).limit(2))
 
 
 
@@ -49,6 +50,7 @@ return res.json(await channelModel.find())
 app.get('/api/users/:type/:user', async function(req, res){
   let type = req.params.type
   let user = req.params.user
+  if(mongoose.Types.ObjectId.isValid(user)) {
   let check = await banModel.findOne({
     _id: user
   })
@@ -58,6 +60,7 @@ app.get('/api/users/:type/:user', async function(req, res){
       "code": "403"
     }
   })
+}
   let array = await channelModel.find()
   let search: any = {
     channel_name: array.find((x: any) => x.channel_name === user),
@@ -74,6 +77,39 @@ app.get('/api/users/:type/:user', async function(req, res){
       }
     });
   }
+});
+app.get('/api/lb/:sort/:limit/', async function(req, res){
+  let sort = req.params.sort
+  let limit = req.params.limit
+  let array: any = {
+    dsc: async () => {
+      return await channelModel.find().sort({reputation: -1}).limit(limit ?? 5)
+    },
+    asc: async () => {
+      return await channelModel.find().sort({reputation: 1}).limit(limit ?? 5)
+    }
+  }
+  return res.json(await array[sort]()) ?? result.error(res, {
+    message: "INVALID_TYPE",
+    code: "400"
+  });
+  
+});
+app.get('/api/lb/:sort/', async function(req, res){
+  let sort = req.params.sort
+  let array: any = {
+    dsc: async () => {
+      return await channelModel.find().sort({reputation: -1})
+    },
+    asc: async () => {
+      return await channelModel.find().sort({reputation: 1})
+    }
+  }
+  return res.json(await array[sort]()) ?? result.error(res, {
+    message: "INVALID_TYPE",
+    code: "400"
+  });
+  
 });
 
 
@@ -92,15 +128,17 @@ app.post('/api/post/channel', async function (req, res) {
     let regexCHN = new RegExp("(https?:\/\/)?(www\.)?youtu((\.be)|(be\..{2,5}))\/((user)|(channel))\/");
     let user = req.body.user;
     let header = req.headers
+    if(mongoose.Types.ObjectId.isValid(user.discord_id)) {
     let check = await banModel.findOne({
       _id: user.discord_id
-    })
+    }) ?? "e"
     if(check) return res.json({
       "error": {
         "message": "BANNED_USER",
         "code": "403"
       }
     })
+  }
     if(header.key !== key) return res.send({
       "error": {
         "message": "OWNER_ONLY",
@@ -144,6 +182,7 @@ app.post('/api/post/channel', async function (req, res) {
       "channel_url": user.channel_url,
       "_id": user.discord_id,
       "channel_name": user.channel_name,
+      "reputation": randomInt(0, 1),
       "channel_videos": []
     }).save()
     return res.send({
@@ -165,6 +204,7 @@ app.post('/api/post/video', async function (req, res) {
   let regexVID = new RegExp("^((?:https?:)?\/\/)?((?:www|m)\.)?((?:youtube\.com|youtu.be))(\/(?:[\w\-]+\?v=|embed\/|v\/)?)([\w\-]+)(\S+)?");
   let video = req.body.video;
   let header = req.headers;
+  if(mongoose.Types.ObjectId.isValid(video.discord_id)) {
   let check = await banModel.findOne({
     _id: video.discord_id
   })
@@ -174,6 +214,7 @@ app.post('/api/post/video', async function (req, res) {
       "code": "403"
     }
   })
+  }
   if(header.key !== key) return res.send({
     "error": {
       "message": "OWNER_ONLY",
@@ -235,6 +276,7 @@ app.post('/api/post/ban/:user/', async function (req, res) {
   let header: any = req.headers;
   let user: string = req.params.user
   let idregex = new RegExp("[0-9]\d{17,18}")
+  if(mongoose.Types.ObjectId.isValid(user)) {
   let check = await banModel.findOne({
     _id: user
   })
@@ -244,6 +286,7 @@ app.post('/api/post/ban/:user/', async function (req, res) {
       "code": "403"
     }
   })
+}
   if(header.key != key) return res.send({
     "error": {
       "message": "OWNER_ONLY",
@@ -282,10 +325,10 @@ app.post('/api/post/ban/:user/', async function (req, res) {
 });
 
 app.delete('/api/delete/users/channel/:id/', async (req, res) => {
-  let header: any = req.headers;
+  let header: any = req.headers.key
   let user: string = req.params.id;
   let idregex = new RegExp("[0-9]\d{17,18}")
-  if(header.key != key) return res.send({
+  if(header != key) return res.send({
     "error": {
       "message": "OWNER_ONLY",
       "code": "none"
@@ -297,10 +340,10 @@ app.delete('/api/delete/users/channel/:id/', async (req, res) => {
       "code": "400"
     }
   });
-  if(idregex.test(user) == false) return res.send({
+  if(idregex.test(user)) return res.send({
     "error": {
       "message": "ID_IS_NOT_VALID",
-      "code": "409"
+      "code": "400"
     }
   });
   let search = await channelModel.findOne({
@@ -312,7 +355,7 @@ app.delete('/api/delete/users/channel/:id/', async (req, res) => {
       "code": "404"
     }
   });
-  await channelModel.findOneAndRemove({
+  await channelModel.findOneAndDelete({
     _id: user
   });
   return res.send({
@@ -329,47 +372,40 @@ app.delete('/api/delete/users/video/:id/:video/', async (req, res) => {
   let user: string = req.params.id;
   let video: string = req.params.video;
   let idregex = new RegExp("[0-9]\d{17,18}")
-  if(header.key != key) return res.send({
-    "error": {
+  let videoID = new RegExp("[0-9]|[0-9]\d{1,2}")
+  if(header.key != key) return result.error(res,{
       "message": "OWNER_ONLY",
       "code": "none"
-    }
   });
-  if(isNaN(Number(user))) return res.send({
-    "error": {
+  if(isNaN(Number(user))) return result.error(res,{
       "message": "USER_ID_MUST_BE_NUMBER",
       "code": "400"
-    }
   });
-  if(idregex.test(user) == false) return res.send({
-    "error": {
+  if(idregex.test(user) == false) return result.error(res,{
       "message": "ID_IS_NOT_VALID",
       "code": "409"
-    }
+  })
+  if(videoID.test(video) == false) return result.error(res,{
+    "message": "VIDEO_NUMBER_IS_NOT_VALID",
+    "code": "409"
   });
   let search = await channelModel.findOne({
     _id: user
   });
-  if(!search) return res.send({
-    "error": {
+  if(!search) return result.error(res,{
       "message": "CHANNEL_NOT_FOUND",
       "code": "404"
-    }
   });
-  if(!search.channel_videos[video]) return res.send({
-    "error": {
+  if(!search.channel_videos[video]) return result.error(res,{
       "message": "INVALID_VIDEO_NUMBER",
       "code": "404"
-    }
   });
   await channelModel.findOneAndRemove({
     _id: user
   });
-  return res.send({
-    "success": {
+  return result.success(res,{
       "message": "REMOVED_A_USER_VIDEO_FROM_API",
       "code": "201"
-    }
   });
 });
 

@@ -6,4 +6,4 @@ const channelSchema = new mongoose.Schema({
         "reputation": {type: Number, default: 0},
         "channel_videos": [Object]
 }, { versionKey: false})
-const channelModel = module.exports = mongoose.model('channels', channelSchema);
+const channelModels = module.exports = mongoose.model('channels', channelSchema);

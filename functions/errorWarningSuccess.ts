@@ -1,5 +1,7 @@
+import express from 'express'
+
 let result: object = {
-    warn: (result: any, object: { message: string, code: string}) => {
+    warn: (result: express.Response, object: { message: string, code: string}) => {
         return result.send({
             "warning": {
                 message: object.message,
@@ -7,7 +9,7 @@ let result: object = {
             }
         });
     },
-    error: (result: any, object: { message: string, code: string}) => {
+    error: (result: express.Response, object: { message: string, code: string}) => {
         return result.send({
             "error": {
                 message: object.message,
@@ -15,7 +17,7 @@ let result: object = {
             }
         });
     },
-    success: (result: any, object: { message: string, code: string}) => {
+    success: (result: express.Response, object: { message: string, code: string}) => {
         return result.send({
             "success": {
                 message: object.message,

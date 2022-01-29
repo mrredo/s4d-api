@@ -6,8 +6,8 @@ const channelModel: any = require('../../../shcemas/channelSchema')
 const banModel: any = require('../../../shcemas/bannedUsers')
 module.exports = {
     name: "lb_sort",
-    run: async (app: express.Application) => {
-        app.get('/api/lb/:sort/', async function(req, res){
+    run: async (app: express.Application, object: { req: express.Request, res: express.Response}) => {
+            const { req, res } = object
             let sort = req.params.sort
             let array: any = {
               dsc: async () => {
@@ -21,7 +21,5 @@ module.exports = {
               message: "INVALID_TYPE",
               code: "400"
             });
-            
-          });
     }
 }

@@ -7,13 +7,13 @@ const banModel: any = require('../../../shcemas/bannedUsers')
 const { key } = require('../../../env.ts')
 module.exports = {
     name: "channel",
-    run: async (app: express.Application) => {
-        app.post('/api/post/channel', async function (req: express.Request, res: express.Response) {
-            let regexCHN = new RegExp("(https?:\/\/)?(www\.)?youtu((\.be)|(be\..{2,5}))\/((user)|(channel))\/");
-            let user = req.body.user;
-            let header = req.headers
+    run: async (app: express.Application, object: { req: express.Request, res: express.Response}) => {
+      const { req, res } = object
+            const regexCHN = new RegExp("(https?:\/\/)?(www\.)?youtu((\.be)|(be\..{2,5}))\/((user)|(channel))\/");
+            const user = req.body.user;
+            const header = req.headers
             if(mongoose.Types.ObjectId.isValid(user.discord_id)) {
-            let check = await banModel.findOne({
+            const check = await banModel.findOne({
               _id: user.discord_id
             }) ?? "e"
             if(check) return res.json({
@@ -30,7 +30,7 @@ module.exports = {
               }
             });
             if(!user.channel_name ||
-               !user.channel_url || 
+               !user.channel_url ||
                !user.channel_videos ||
                !user.discord_id) return res.send({
                  "error": {
@@ -38,7 +38,7 @@ module.exports = {
                    "code": "422"
                  }
                });
-            if(typeof user.channel_name !== 'string' || 
+            if(typeof user.channel_name !== 'string' ||
                typeof user.channel_url !== 'string'||
                typeof user.discord_id !== 'string' ||
                typeof user.channel_videos !== 'object') return res.send({
@@ -53,7 +53,7 @@ module.exports = {
                   "code": "none"
                 }
               })
-            let search = await channelModel.findOne({
+            const search = await channelModel.findOne({
               _id: user.discord_id
             })
             if(search) return res.send({
@@ -75,6 +75,5 @@ module.exports = {
                 "code": "201"
               }
             });
-        });
     }
 }

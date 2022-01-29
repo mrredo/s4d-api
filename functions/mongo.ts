@@ -4,7 +4,7 @@ export = (pass: string,  mongoose: any) => {
     .connect(pass, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
-      //useFindAndModify: false,
+      // useFindAndModify: false,
     })
     .then(
       console.log(`Connected the API to Mongo DB`))

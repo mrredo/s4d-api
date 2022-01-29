@@ -8,9 +8,9 @@ module.exports = {
     name: "lb_sort_limit",
     run: async (app: express.Application, object: { req: express.Request, res: express.Response}) => {
       const { req, res } = object
-      let sort = req.params.sort
-      let limit = req.params.limit
-      let array: any = {
+      const sort = req.params.sort
+      const limit = req.params.limit
+      const array: any = {
         dsc: async () => {
           return await channelModel.find().sort({reputation: -1}).limit(limit ?? 5)
         },

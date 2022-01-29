@@ -1,6 +1,6 @@
 import express from 'express'
 
-let result: object = {
+const result: object = {
     warn: (result: express.Response, object: { message: string, code: string}) => {
         return result.send({
             "warning": {
@@ -25,6 +25,6 @@ let result: object = {
             }
         });
     }
-    
+
 }
 module.exports = result

@@ -8,13 +8,13 @@ const { key } = require('../../../env.ts')
 const banID = '61e835c662c9ee839f5962c8'
 module.exports = {
     name: "ban_user",
-    run: async (app: express.Application) => {
-        app.post('/api/post/ban/:user/', async function (req: express.Request, res: express.Response) {
-            let header: any = req.headers;
-            let user: string = req.params.user
-            let idregex = new RegExp("[0-9]\d{17,18}")
+    run: async (app: express.Application, object: { req: express.Request, res: express.Response}) => {
+      const { req, res } = object
+            const header: any = req.headers;
+            const user: string = req.params.user
+            const idregex = new RegExp("[0-9]\d{17,18}")
             if(mongoose.Types.ObjectId.isValid(user)) {
-            let check = await banModel.findOne({
+            const check = await banModel.findOne({
               _id: user
             })
             if(check) return res.json({
@@ -42,8 +42,8 @@ module.exports = {
                 "code": "400"
               }
             });
-            let userGet = await banModel.findById(banID)
-            let search = userGet.bannedUsers.find((x: any) => x == user)
+            const userGet = await banModel.findById(banID)
+            const search = userGet.bannedUsers.find((x: any) => x == user)
             if(search) return res.send({
               "error": {
                 "message": "BANNED_USER_ALREADY_EXISTS",
@@ -59,6 +59,5 @@ module.exports = {
                 "code": "201"
               }
             });
-          });
     }
 }

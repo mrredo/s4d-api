@@ -7,13 +7,13 @@ const banModel: any = require('../../../shcemas/bannedUsers')
 const { key } = require('../../../env.ts')
 module.exports = {
     name: "video",
-    run: async (app: express.Application) => {
-        app.post('/api/post/video', async function (req: express.Request, res: express.Response) {
-            let regexVID = new RegExp("^((?:https?:)?\/\/)?((?:www|m)\.)?((?:youtube\.com|youtu.be))(\/(?:[\w\-]+\?v=|embed\/|v\/)?)([\w\-]+)(\S+)?");
-            let video = req.body.video;
-            let header = req.headers;
+    run: async (app: express.Application, object: { req: express.Request, res: express.Response}) => {
+      const { req, res } = object
+            const regexVID = new RegExp("^((?:https?:)?\/\/)?((?:www|m)\.)?((?:youtube\.com|youtu.be))(\/(?:[\w\-]+\?v=|embed\/|v\/)?)([\w\-]+)(\S+)?");
+            const video = req.body.video;
+            const header = req.headers;
             if(mongoose.Types.ObjectId.isValid(video.discord_id)) {
-            let check = await banModel.findOne({
+            const check = await banModel.findOne({
               _id: video.discord_id
             })
             if(check) return res.json({
@@ -30,14 +30,14 @@ module.exports = {
               }
             })
             if(!video.video_url ||
-               !video.video_title || 
+               !video.video_title ||
                !video.video_thumbnail) return res.send({
                 "error": {
                   "message": "INVALID_PARAMETERS",
                   "code": "422"
                 }
                })
-            if(typeof video.video_url !== 'string' || 
+            if(typeof video.video_url !== 'string' ||
                typeof video.video_title !== 'string'||
                typeof video.video_thumbnail !== 'string') return res.send({
                 "error": {
@@ -51,7 +51,7 @@ module.exports = {
                 "code": "none"
               }
               })
-            let search = await channelModel.findOne({
+            const search = await channelModel.findOne({
               _id: video.discord_id
             });
             if(!search) return res.send({
@@ -63,7 +63,7 @@ module.exports = {
             await channelModel.findOneAndUpdate({
               _id: video.discord_id
              }, {
-              $addToSet: { channel_videos: { 
+              $addToSet: { channel_videos: {
                 video_url: video.video_url,
                 video_title: video.video_title || "invalid name",
                 video_thumbnail: video.video_thumbnail
@@ -75,6 +75,5 @@ module.exports = {
                 "code": "201"
               }
             });
-          });
     }
 }

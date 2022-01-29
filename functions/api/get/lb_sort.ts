@@ -8,8 +8,8 @@ module.exports = {
     name: "lb_sort",
     run: async (app: express.Application, object: { req: express.Request, res: express.Response}) => {
             const { req, res } = object
-            let sort = req.params.sort
-            let array: any = {
+            const sort = req.params.sort
+            const array: any = {
               dsc: async () => {
                 return await channelModel.find().sort({reputation: -1})
               },

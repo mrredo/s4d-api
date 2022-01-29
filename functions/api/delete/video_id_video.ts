@@ -7,13 +7,13 @@ const banModel: any = require('../../../shcemas/banModel')
 const { key } = require('../../../env.ts')
 module.exports = {
     name: "video_id_video",
-    run: async (app: express.Application) => {
-        app.delete('/api/delete/users/video/:id/:video/', async (req: express.Request, res: express.Response) => {
-            let header: any = req.headers;
-            let user: string = req.params.id;
-            let video: string = req.params.video;
-            let idregex = new RegExp("[0-9]\d{17,18}")
-            let videoID = new RegExp("[0-9]|[0-9]\d{1,2}")
+    run: async (app: express.Application, object: { req: express.Request, res: express.Response}) => {
+        const { req, res } = object
+            const header: any = req.headers;
+            const user: string = req.params.id;
+            const video: string = req.params.video;
+            const idregex = new RegExp("[0-9]\d{17,18}")
+            const videoID = new RegExp("[0-9]|[0-9]\d{1,2}")
             if(header.key != key) return result.error(res,{
                 "message": "OWNER_ONLY",
                 "code": "none"
@@ -30,7 +30,7 @@ module.exports = {
               "message": "VIDEO_NUMBER_IS_NOT_VALID",
               "code": "409"
             });
-            let search = await channelModel.findOne({
+            const search = await channelModel.findOne({
               _id: user
             });
             if(!search) return result.error(res,{
@@ -48,6 +48,5 @@ module.exports = {
                 "message": "REMOVED_A_USER_VIDEO_FROM_API",
                 "code": "201"
             });
-          });
     }
 }

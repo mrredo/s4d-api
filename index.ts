@@ -6,10 +6,12 @@ const rateLimit = require('express-rate-limit')
 import connect from './functions/mongo'
 const mongoose = require('mongoose');
 const LoadAPI = require('./functions/LoadAPI');
+import dotenv from 'dotenv'
 const bigyes = async () => {
+  dotenv.config();
 connect(mongo, mongoose);
 const apiLimiter = rateLimit({
-	windowMs: 1 * 60 * 1000, 
+	windowMs: 1 * 60 * 1000,
 	max: 20,
 	standardHeaders: true,
 	legacyHeaders: false,
@@ -29,13 +31,13 @@ app.use(bodyParser.json());
 
 app.set('view engine', 'ejs');
 
-
+// Loads API
 LoadAPI(app, "api")
 
 
 
 
-
+// loads the website
 app.get('/', function(req: express.Request, res: express.Response) {
   res.render('index.ejs');
 });
@@ -46,7 +48,7 @@ app.get('/rules', function(req: express.Request, res: express.Response) {
   res.render('rules.ejs');
 });
 
-
+// listens to port
 app.listen(port, () => {
   console.log(`Server is listing on port ${port}`);
 });

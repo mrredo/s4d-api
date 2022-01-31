@@ -1,9 +1,7 @@
 export {};
 const result = require('../../errorWarningSuccess');
-const randomInt = require('../../randomInt');
 import express from 'express';
-const channelModel: any = require('../../../shcemas/channelSchema')
-const banModel: any = require('../../../shcemas/bannedUsers')
+import channelModel from '../../../shcemas/channelSchema'
 module.exports = {
     name: "lb_sort_limit",
     run: async (app: express.Application, object: { req: express.Request, res: express.Response}) => {

@@ -1,6 +1,6 @@
 import express from 'express'
 
-const result: object = {
+export = {
     warn: (result: express.Response, object: { message: string, code: string}) => {
         return result.send({
             "warning": {
@@ -27,4 +27,3 @@ const result: object = {
     }
 
 }
-module.exports = result

@@ -3,7 +3,13 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon",
+    "clean": "rimraf dist/*",
+    "copy-assets": "ts-node tools/copyAssets",
+    "lint": "tslint -c tslint.json -p tsconfig.json --fix",
+    "tsc": "tsc",
+    "build": "npm-run-all clean lint tsc copy-assets",
+    "dev:start": "npm-run-all build start",
+    "dev": "nodemon --watch src -e ts,ejs --exec npm run dev:start",
     "start": "node .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -26,20 +32,26 @@
     "marked": "^4.0.9",
     "mongoose": "^6.1.6",
     "node-markdown": "^0.1.1",
-    "npm-run-all": "^4.1.5",
-    "ts-node": "^10.4.0",
+    "prompt": "^1.2.1",
     "winston": "^3.3.3"
   },
   "devDependencies": {
     "@types/cors": "^2.8.7",
     "@types/debug": "^4.1.5",
     "@types/express": "^4.17.13",
+    "@types/fs-extra": "^9.0.13",
+    "@types/shelljs": "^0.8.11",
+    "fs-extra": "^10.0.0",
     "nodemon": "^2.0.15",
+    "npm-run-all": "^4.1.5",
+    "rimraf": "^3.0.2",
+    "shelljs": "^0.8.5",
     "source-map-support": "^0.5.16",
+    "ts-node": "^10.4.0",
     "tslint": "^6.0.0",
     "typescript": "^3.7.5"
   },
-    "engines": {
+  "engines": {
     "node": "16.x"
   },
   "repository": {

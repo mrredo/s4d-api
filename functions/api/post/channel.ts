@@ -4,7 +4,8 @@ const randomInt = require('../../randomInt');
 import express from 'express';
 const channelModel: any = require('../../../shcemas/channelSchema')
 const banModel: any = require('../../../shcemas/bannedUsers')
-const { key } = require('../../../env.ts')
+const { key } = require('../../../env')
+import mongoose from 'mongoose'
 module.exports = {
     name: "channel",
     run: async (app: express.Application, object: { req: express.Request, res: express.Response}) => {

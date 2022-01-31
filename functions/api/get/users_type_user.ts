@@ -1,7 +1,7 @@
 export {};
 import express from 'express';
-const mongoose = require('mongoose');
-const channelModel: any = require('../../../shcemas/channelSchema')
+import mongoose from 'mongoose';
+import channelModel from '../../../shcemas/channelSchema'
 const banModel: any = require('../../../shcemas/bannedUsers')
 module.exports = {
     name: "users_type_user",

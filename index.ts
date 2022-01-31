@@ -1,5 +1,5 @@
 import express from 'express';
-const { port, key, mongo } = require('./env.ts')
+const { port, key, mongo } = require('./env.json')
 const app: express.Application = express();
 const bodyParser = require('body-parser')
 const rateLimit = require('express-rate-limit')

@@ -12,7 +12,6 @@ const LoadAPI = require('./functions/LoadAPI');
 import dotenv from 'dotenv'
 import { resolve } from 'path';
 import e from 'express';
-require('dotenv').config()
 const bigyes = async () => {
   dotenv.config();
 connect(mongo, mongoose);

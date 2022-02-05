@@ -15,7 +15,7 @@ module.exports = {
                 return await channelModel.find().sort({reputation: 1})
               }
             }
-            return res.json(await array[sort]()) ?? result.error(res, {
+            return res.json(await array[sort]()) || result.error(res, {
               message: "INVALID_TYPE",
               code: "400"
             });

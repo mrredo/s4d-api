@@ -1,4 +1,4 @@
-const api = (folder: string, file: string) => require(`./api/${folder ?? "get"}/${file ?? "null"}`);
+const api = (folder: string, file: string) => require(`./api/${folder || "get"}/${file || "null"}`);
 
 import express from 'express'
 module.exports = async (app: express.Application, folder: string) => {

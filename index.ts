@@ -1,12 +1,16 @@
 import express from 'express';
-const { port, key, mongo } = require('./env.json')
+const { port, key, mongo } = require('./env.ts') 
 const app: express.Application = express();
+app.listen(3000, () => {
+  console.log("API revived LOL")
+})
 const bodyParser = require('body-parser')
 const rateLimit = require('express-rate-limit')
 import connect from './functions/mongo'
 const mongoose = require('mongoose');
 const LoadAPI = require('./functions/LoadAPI');
 import dotenv from 'dotenv'
+require('dotenv').config()
 const bigyes = async () => {
   dotenv.config();
 connect(mongo, mongoose);

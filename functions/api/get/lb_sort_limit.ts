@@ -10,13 +10,13 @@ module.exports = {
       const limit = req.params.limit
       const array: any = {
         dsc: async () => {
-          return await channelModel.find().sort({reputation: -1}).limit(limit ?? 5)
+          return await channelModel.find().sort({reputation: -1}).limit(limit || 5)
         },
         asc: async () => {
-          return await channelModel.find().sort({reputation: 1}).limit(limit ?? 5)
+          return await channelModel.find().sort({reputation: 1}).limit(limit || 5)
         }
       }
-      return res.json(await array[sort]()) ?? result.error(res, {
+      return res.json(await array[sort]()) || result.error(res, {
         message: "INVALID_TYPE",
         code: "400"
       });

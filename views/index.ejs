@@ -1,13 +1,66 @@
-<%- include('header'); -%>
 <html>
     <header>
         <title>Scratch for discord API</title>
     </header>
     <body>
-        Hello this is s4d API!
-        <br>
-        This API now is used for creators to add/delete/get data for their channels!
-        <br>
-        Check out documentations to see how to use the API(GET requests are public only).
+        <a href="/qna">QNA</a> <a href="/rules">Rules</a>
+        <div class="limitations">
+        <p id="lap">Api limitations</p>
+        <p id="lapt">
+            20 requests per minute per IP
+            <!--All requests need apikey in header for it  to work-->
+        </p>
+        </div>
+        <div class="docs">
+            <p id="lap">GET all items</p>
+            <p id="lapt">to get all items in an array make a request to <p id="loli" style="width: 100px;">/api/users/all</p></p>
+        </div>
+        <div class="docscn">
+            <p id="lap" style="max-width: 200px;">GET item in array using channel_name</p>
+            <p id="lapt">make a request to <p id="loli">/api/users/channel_name/query/</p> query = string</p>
+        </div>
+        <div class="docsdi">
+            <p id="lap" style="max-width: 200px;">GET item in array using discord_id</p>
+            <p id="lapt">make a request to <p id="loli">/api/users/discord_id/query/</p> query = string</p>
+        </div>
+        <div class="thing">
+            <p id="lap" style="max-width: 200px;">All types</p>
+            <p id="lapt">These are all types for the api<p id="loli">/api/users/type/</p> <details><summary>type</summary><ul>
+                <li>channel_name</li>
+                <li>discord_id</li>
+                <li>all</li>
+        </ul></details></p>
+        </div>
+        <div class="example">
+            <p id="lap" style="width: 63px;">Example</p>
+            <button onclick="CopyText(document.getElementById('code'))">Copy!</button>
+            <textarea id="code">ezz</textarea>
+        </div>
     </body>
 </html>
+<script>
+    function CopyText(text) {
+        text.select();
+        text.setSelectionRange(0, 99999);
+        navigator.clipboard.writeText(text.textContent);
+    }
+
+</script>
+<style>
+#lap {
+  border-style: solid;
+  border-width: 2px;
+  max-width: 100px;
+  padding: 5px;
+}
+#loli {
+    border-width: 2px; 
+    border-style: solid; 
+    max-width: 205px; 
+    padding: 1px;
+}
+#code {
+    border-style: solid;
+    border-width: 2px;
+}
+</style>

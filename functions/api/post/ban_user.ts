@@ -4,7 +4,8 @@ const randomInt = require('../../randomInt');
 import express from 'express';
 const channelModel: any = require('../../../shcemas/channelSchema')
 const banModel: any = require('../../../shcemas/bannedUsers')
-const { key } = require('../../../env.ts')
+const { key } = require('../../../env')
+import mongoose from 'mongoose'
 const banID = '61e835c662c9ee839f5962c8'
 module.exports = {
     name: "ban_user",

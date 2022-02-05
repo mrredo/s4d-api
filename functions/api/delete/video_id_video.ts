@@ -1,10 +1,8 @@
 export {};
 const result = require('../../errorWarningSuccess');
-const randomInt = require('../../randomInt');
 import express from 'express';
-const channelModel: any = require('../../../shcemas/channelSchema')
-const banModel: any = require('../../../shcemas/banModel')
-const { key } = require('../../../env.ts')
+import channelModel from '../../../shcemas/channelSchema'
+const { key } = require('../../../env')
 module.exports = {
     name: "video_id_video",
     run: async (app: express.Application, object: { req: express.Request, res: express.Response}) => {

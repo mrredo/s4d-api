@@ -9,7 +9,7 @@
     "tsc": "tsc",
     "build": "npm-run-all clean lint tsc copy-assets",
     "dev:start": "npm-run-all build start",
-    "dev": "nodemon --watch src -e ts,ejs --exec npm run dev:start",
+    "dev": "nodemon",
     "start": "npx ts-node .",
     "update": "npm init -y && npm i --save-dev node@16 && npm config set prefix=$(pwd)/node_modules/node && export PATH=$(pwd)/node_modules/node/bin:$PATH",
     "up-st": "npm init -y && npm i --save-dev node@16 && npm config set prefix=$(pwd)/node_modules/node && export PATH=$(pwd)/node_modules/node/bin:$PATH && npx ts-node index.ts",

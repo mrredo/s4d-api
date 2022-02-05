@@ -1,5 +1,5 @@
 import express from 'express';
-const { port, key, mongo } = require('./env.ts') 
+const { port, key, mongo } = require('./env.ts')
 const app: express.Application = express();
 app.listen(3000, () => {
   console.log("API revived LOL")
@@ -10,6 +10,8 @@ import connect from './functions/mongo'
 const mongoose = require('mongoose');
 const LoadAPI = require('./functions/LoadAPI');
 import dotenv from 'dotenv'
+import { resolve } from 'path';
+import e from 'express';
 require('dotenv').config()
 const bigyes = async () => {
   dotenv.config();
@@ -37,14 +39,18 @@ app.set('view engine', 'ejs');
 
 // Loads API
 LoadAPI(app, "api")
-
-
-
-
 // loads the website
 app.get('/', function(req: express.Request, res: express.Response) {
   res.render('index.ejs');
 });
+app.get('/docs', function(req: express.Request, res: express.Response) {
+  res.render('MainDocsPage.ejs');
+});
+app.get('/docs/:type', async function(req: express.Request, res: express.Response) {
+  let type = req.params.type
+  if(type == "get") return res.render("docs/get/get.ejs")
+    else return res.redirect("/docs/get")
+})
 app.get('/qna', function(req: express.Request, res: express.Response) {
   res.render('qna.ejs');
 });

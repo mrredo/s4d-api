@@ -10,8 +10,6 @@ import connect from './functions/mongo'
 const mongoose = require('mongoose');
 const LoadAPI = require('./functions/LoadAPI');
 import dotenv from 'dotenv'
-import { resolve } from 'path';
-import e from 'express';
 const bigyes = async () => {
   dotenv.config();
 connect(mongo, mongoose);

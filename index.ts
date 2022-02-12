@@ -12,7 +12,6 @@ import connect from './functions/mongo'
 const mongoose = require('mongoose');
 const LoadAPI = require('./functions/LoadAPI');
 import dotenv from 'dotenv'
-import { responseEncoding } from 'axios';
 const bigyes = async () => {
   dotenv.config();
 connect(mongo, mongoose);

@@ -7,7 +7,7 @@ const banModel: any = require('../../../shcemas/bannedUsers')
 import mongoose from 'mongoose'
 const { key } = require('../../../env')
 module.exports = {
-    name: "video",
+    path: "video",
     run: async (app: express.Application, object: { req: express.Request, res: express.Response}) => {
       const { req, res } = object
             const regexVID = new RegExp("^((?:https?:)?\/\/)?((?:www|m)\.)?((?:youtube\.com|youtu.be))(\/(?:[\w\-]+\?v=|embed\/|v\/)?)([\w\-]+)(\S+)?");

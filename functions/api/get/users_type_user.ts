@@ -4,7 +4,7 @@ import mongoose from 'mongoose';
 import channelModel from '../../../shcemas/channelSchema'
 const banModel: any = require('../../../shcemas/bannedUsers')
 module.exports = {
-    name: "users_type_user",
+  path: "users_type_user",
     run: async (app: express.Application, object: { req: express.Request, res: express.Response}) => {
       const { req, res } = object
       const type = req.params.type

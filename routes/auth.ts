@@ -3,6 +3,9 @@ import mongoose from 'mongoose'
 const authModel = require('../shcemas/login_schema')
 const Router = express.Router()
 const config = require('../env')
+const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+const fetch = require('node-fetch')
+
 /*
 data for login schema
  _id: req(String), // user id
@@ -10,58 +13,71 @@ data for login schema
     token_type: req(String),
     expires_in: req(Number),
     refresh_token: req(String),
-    scope: req(String),
     user: {
-        id: req(String),
         username: req(String),
         discrimination: req(String),
         avatar: req(String),
         language: req(String)
     }
  */
-const Auth = Router
-            .get('/login', async (req: express.Request, res: express.Response) => {
-				const code = req.query.code
-                if(code) {
-					try {
-						const oauthResult = await fetch('https://discord.com/api/oauth2/token', {
-							method: 'POST',
-							body: new URLSearchParams({
-								client_id: config.client_id,
-								client_secret: config.client_secret,
-								//code,
-								grant_type: 'authorization_code',
-								redirect_uri: `http://localhost:${config.port}/auth/login`,
-								scope: 'identify',
-							}),
-							headers: {
-								'Content-Type': 'application/x-www-form-urlencoded',
-							},
-						});
+interface Code {
+	code: string
+}
+Router
+    .get('/login', async (req: express.Request, res: express.Response) => {
+		const { code } = req.query as unknown as Code;
+		console.log(code)
+		
+        if(code) {
+			console.log("wdwdwd")
+			try {
+				const oauthResult = await fetch('https://discord.com/api/oauth2/token', {
+					method: 'POST',
+					body: new URLSearchParams({
+					client_id: config.client_id,
+					client_secret: config.client_secret,
+					code: code,
+					grant_type: 'authorization_code',
+					redirect_uri: `http://localhost:${config.port}/auth/login`,
+					scope: 'identify',
+					}),
+					headers: {
+						'Content-Type': 'application/x-www-form-urlencoded',
+						},
+				});
 						
-						const oauthData = await oauthResult.json();
-						console.log(oauthData)
-						const userResult = await fetch('https://discord.com/api/users/@me', {
-							headers: {
-								authorization: `${oauthData.token_type} ${oauthData.access_token}`,
-							},
-						});
-						const userData = await userResult.json()
-						console.log(userData);
-						return res.render('index.ejs', { 
-							user: userData, 
-							avatar: {
-								url: `https://cdn.discordapp.com/avatars/${userData.id}/${userData.avatar}`
-							}
-						});
-					} catch {
+				const oauthData = await oauthResult.json();
+				console.log(oauthData)
+				const userResult = await fetch('https://discord.com/api/users/@me', {
+					headers: {
+						authorization: `${oauthData.token_type} ${oauthData.access_token}`,
+					},
+				});
 
+				const userData = await userResult.json()
+				console.log(userData);
+				new authModel({
+					_id: userData.id,
+					access_token: oauthData.access_token,
+					token_type: oauthData.token_type,
+					expires_in: oauthData.expires_in,
+					refresh_token: oauthData.refresh_token,
+					user: {
+						username: userData.username,
+						discrimination: userData.discriminator,
+						avatar: userData.avatar,
+						language: userData.locale
 					}
-				} //else return res.redirect("https://discord.com/api/oauth2/authorize?client_id=930543540432437298&redirect_uri=http%3A%2F%2Flocalhost%3A8080%2Fauth%2Flogin&response_type=code&scope=identify")
+				}).save();
+				return res.redirect('/')
+			} catch(error) {
+				console.log(error)
+			}
+			} else return res.redirect("https://discord.com/api/oauth2/authorize?client_id=930543540432437298&redirect_uri=http%3A%2F%2Flocalhost%3A8080%2Fauth%2Flogin&response_type=code&scope=identify")
             })
-            .get('/logout', (req: express.Request, res: express.Response) => {
-                return res.send("LOGOUT")
-            })
+    .get('/logout', (req: express.Request, res: express.Response) => {
+        return res.send("LOGOUT")
+    })
 module.exports.Router = Router
 
 

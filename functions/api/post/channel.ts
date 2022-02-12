@@ -7,7 +7,7 @@ const banModel: any = require('../../../shcemas/bannedUsers')
 const { key } = require('../../../env')
 import mongoose from 'mongoose'
 module.exports = {
-    name: "channel",
+    path: "channel",
     run: async (app: express.Application, object: { req: express.Request, res: express.Response}) => {
       const { req, res } = object
             const regexCHN = new RegExp("(https?:\/\/)?(www\.)?youtu((\.be)|(be\..{2,5}))\/((user)|(channel))\/");

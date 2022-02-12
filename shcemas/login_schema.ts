@@ -11,9 +11,7 @@ const channelSchema = new mongoose.Schema({
     token_type: req(String),
     expires_in: req(Number),
     refresh_token: req(String),
-    scope: req(String),
     user: {
-        id: req(String),
         username: req(String),
         discrimination: req(String),
         avatar: req(String),

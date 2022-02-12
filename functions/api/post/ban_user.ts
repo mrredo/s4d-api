@@ -8,7 +8,7 @@ const { key } = require('../../../env')
 import mongoose from 'mongoose'
 const banID = '61e835c662c9ee839f5962c8'
 module.exports = {
-    name: "ban_user",
+    path: "ban_user",
     run: async (app: express.Application, object: { req: express.Request, res: express.Response}) => {
       const { req, res } = object
             const header: any = req.headers;

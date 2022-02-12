@@ -4,7 +4,7 @@ import express from 'express';
 import channelModel from '../../../shcemas/channelSchema'
 const { key } = require('../../../env')
 module.exports = {
-    name: "video_id_video",
+    path: "video_id_video",
     run: async (app: express.Application, object: { req: express.Request, res: express.Response}) => {
         const { req, res } = object
             const header: any = req.headers;

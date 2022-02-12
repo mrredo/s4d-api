@@ -1,0 +1,88 @@
+<nav class="navbar">
+    <li id="linkl"><a href="/" id="link">
+        Main
+    </a></li>
+    <li id="linkl"><a href="/docs" id="link">
+        Documentations
+    </a></li>
+    <li id="linkl"><a href="/rules" id="link">
+        Rules
+    </a></li>
+    <li id="linkl"><a href="/qna" id="link">
+        QNA
+    </a></li>
+    <div class="dropdown">
+        <button class="dropbtn">Dropdown</button>
+        <div class="dropdown-content">
+          <a href="/auth/login">Link 1</a>
+          <a href="#">Link 2</a>
+          <a href="#">Link 3</a>
+        </div>
+      </div>
+</nav>
+<style scoped>
+    
+.dropbtn {
+  background-color: #969696;
+  color: rgb(0, 0, 0);
+  padding: 10px 16px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  border-radius: 20px;
+  border-width: 2px;
+  border-color: black;
+  border-style: solid;
+  transition: background-color 2s;
+  font-family: Sans-serif;
+}
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f1f1f1;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+.dropdown-content a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+.dropdown-content a:hover {background-color: #ddd;}
+
+.dropdown:hover .dropdown-content {display: block;}
+
+.dropdown:hover .dropbtn {background-color: #969696;}
+    #linkl {
+        display: inline;
+        padding: 2px;
+    }
+    #link {
+        background-color: #969696;
+        color: rgb(0, 0, 0);
+        padding: 10px 16px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        border-radius: 20px;
+        border-width: 2px;
+        border-color: black;
+        border-style: solid;
+        transition: background-color 2s;
+        font-family: Sans-serif;
+    }
+    #link:hover {
+        background-color: #dacfcf;
+        border-radius: 10;
+    }
+</style>

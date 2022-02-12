@@ -4,12 +4,15 @@ const app: express.Application = express();
 app.listen(3000, () => {
   console.log("API revived LOL")
 })
+import router from './router'
+const Router = require('./router')
 const bodyParser = require('body-parser')
 const rateLimit = require('express-rate-limit')
 import connect from './functions/mongo'
 const mongoose = require('mongoose');
 const LoadAPI = require('./functions/LoadAPI');
 import dotenv from 'dotenv'
+import { responseEncoding } from 'axios';
 const bigyes = async () => {
   dotenv.config();
 connect(mongo, mongoose);
@@ -55,6 +58,8 @@ app.get('/rules', function(req: express.Request, res: express.Response) {
   res.render('rules.ejs');
 });
 
+//routers
+router(app);
 // listens to port
 app.listen(port, () => {
   console.log(`Server is listing on port ${port}`);

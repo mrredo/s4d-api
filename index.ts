@@ -1,16 +1,15 @@
 import express from 'express';
-const { port, key, mongo, client_id, client_secret } = require('./env.ts')
+const { port, mongo } = require('./env.ts')
 const app: express.Application = express();
-app.listen(3000, () => {
-  console.log("API revived LOL")
-})
+import session from 'express-session'
 import router from './router'
-const Router = require('./router')
+const randomString = require('./functions/randomString')
 const bodyParser = require('body-parser')
 const rateLimit = require('express-rate-limit')
 import connect from './functions/mongo'
 const mongoose = require('mongoose');
 const LoadAPI = require('./functions/LoadAPI');
+const authModel = require('./shcemas/login_schema')
 import dotenv from 'dotenv'
 const bigyes = async () => {
   dotenv.config();
@@ -27,20 +26,37 @@ const apiLimiter = rateLimit({
     }
   }
 })
+// repl 24/7
+app.listen(3000, () => {
+  console.log("API revived LOL")
+})
+//api path and rate limiter
 app.use('/api', apiLimiter)
-
+// adds json spacing
 app.set('json spaces', 2)
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
+//express session
+app.use(
+  session({
+      secret: randomString(),
+      resave: false,
+      saveUninitialized: false,
+  })
+);
+// uses ejs as render engine
 app.set('view engine', 'ejs');
 
 // Loads API
 LoadAPI(app, "api")
 // loads the website
-app.get('/', function(req: express.Request, res: express.Response) {
-  res.render('index.ejs');
+app.get('/', async (req: express.Request, res: express.Response) => {
+
+  res.render('index.ejs', { user: await authModel.findOne({
+    
+  }) });
 });
 app.get('/docs', function(req: express.Request, res: express.Response) {
   res.render('MainDocsPage.ejs');
@@ -56,44 +72,6 @@ app.get('/qna', function(req: express.Request, res: express.Response) {
 app.get('/rules', function(req: express.Request, res: express.Response) {
   res.render('rules.ejs');
 });
-interface Code {
-	code: string
-}
-app.get('/login', async (req: express.Request, res: express.Response) => {
-  const { code } = req.query as unknown as Code;
-  if(code) {
-    try {
-      const oauthResult = await fetch('https://discord.com/api/oauth2/token', {
-        method: 'POST',
-        body: new URLSearchParams({
-        client_id: client_id,
-        client_secret: client_secret,
-        code: code,
-        grant_type: 'authorization_code',
-        redirect_uri: `http://localhost:${port}/auth/login`,
-        scope: 'identify',
-        }),
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-          },
-      });
-          
-      const oauthData = await oauthResult.json();
-      console.log(oauthData)
-      const userResult = await fetch('https://discord.com/api/users/@me', {
-        headers: {
-          authorization: `${oauthData.token_type} ${oauthData.access_token}`,
-        },
-      });
-      const userData = await userResult.json()
-      console.log(userData);
-      return res.redirect('/')
-    } catch {
-      console.error;
-    }
-    } else return res.redirect("https://discord.com/api/oauth2/authorize?client_id=930543540432437298&redirect_uri=http%3A%2F%2Flocalhost%3A8080%2Fauth%2Flogin&response_type=code&scope=identify")
-})
-
 //routers
 router(app);
 // listens to port

@@ -1,11 +1,10 @@
 import express from 'express'
-import mongoose from 'mongoose'
 const authModel = require('../shcemas/login_schema')
 const Router = express.Router()
 const config = require('../env')
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 const fetch = require('node-fetch')
-
+import localForage from 'localforage'
 /*
 data for login schema
  _id: req(String), // user id
@@ -53,14 +52,22 @@ Router
 						authorization: `${oauthData.token_type} ${oauthData.access_token}`,
 					},
 				});
-
 				const userData = await userResult.json()
 				console.log(userData);
-				new authModel({
+				const dataUserMongo = await authModel.findOne({
+					_id: userData.id
+				}) 
+				localForage.setItem("userInfo", {
+					username: userData.username,
+					discrimination: userData.discriminator,
+					avatar: userData.avatar,
+					language: userData.locale
+				})
+				if(!dataUserMongo) new authModel({
 					_id: userData.id,
 					access_token: oauthData.access_token,
 					token_type: oauthData.token_type,
-					expires_in: oauthData.expires_in,
+					expires_in: oauthData.expires_in + Date.now(),
 					refresh_token: oauthData.refresh_token,
 					user: {
 						username: userData.username,
@@ -75,8 +82,8 @@ Router
 			}
 			} else return res.redirect("https://discord.com/api/oauth2/authorize?client_id=930543540432437298&redirect_uri=http%3A%2F%2Flocalhost%3A8080%2Fauth%2Flogin&response_type=code&scope=identify")
             })
-    .get('/logout', (req: express.Request, res: express.Response) => {
-        return res.send("LOGOUT")
+    .get('/logout', async (req: express.Request, res: express.Response) => {
+		
     })
 module.exports.Router = Router
 

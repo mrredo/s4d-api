@@ -14,9 +14,13 @@
     <div class="dropdown">
         <button class="dropbtn">Dropdown</button>
         <div class="dropdown-content">
-          <a href="/auth/login">
-            Login
-          </a>
+          <% if(typeof user !== 'string') {%>
+            <%= user.username %>
+          <% } else { %>
+            <a href="/auth/login">
+              Login
+            </a>
+          <% } %>
           
           <a href="#">Link 2</a>
         </div>

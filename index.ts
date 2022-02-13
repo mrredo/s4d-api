@@ -67,25 +67,36 @@ LoadAPI(app, "api")
 // loads the website
 app.get('/', async (req: express.Request, res: express.Response) => {
   const session = req.session as any
+  session.current_url = '/'
   res.render('index.ejs', { user: session.user });
 });
 app.get('/docs', function(req: express.Request, res: express.Response) {
   const session = req.session as any
+  session.current_url = '/docs'
   res.render('MainDocsPage.ejs', { user: session.user });
 });
 app.get('/docs/:type', async function(req: express.Request, res: express.Response) {
   const session = req.session as any
   let type = req.params.type
+  session.current_url = '/docs/get'
   if(type == "get") return res.render("docs/get/get.ejs", { user: session.user })
     else return res.redirect("/docs/get")
 })
 app.get('/qna', function(req: express.Request, res: express.Response) {
   const session = req.session as any
+  session.current_url = '/qna'
   res.render('qna.ejs', { user: session.user });
 });
 app.get('/rules', function(req: express.Request, res: express.Response) {
   const session = req.session as any
+  session.current_url = '/rules'
   res.render('rules.ejs', { user: session.user });
+});
+
+app.get('/user/info', function(req: express.Request, res: express.Response) {
+  const session = req.session as any
+  session.current_url = '/user/info'
+  res.render('userInfo.ejs', { user: session.user });
 });
 //routers
 router(app);

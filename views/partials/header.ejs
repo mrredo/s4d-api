@@ -1,3 +1,11 @@
+<head>
+  <title>Scratch for discord API</title>
+<meta content="Scratch for discord API" property="og:title" />
+<meta content="Use this site to interact with s4d API!" property="og:description" />
+<meta content="https://s4d-api.mrredogaming.repl.co/" property="og:url" />
+<meta content="https://embed.com/embedimage.png" property="og:image" />
+<meta content="#ced113" data-react-helmet="true" name="theme-color" />
+</head>
 <nav class="navbar">
     <li id="linkl"><a href="/" id="link">
         Main
@@ -14,14 +22,12 @@
     
     <div class="dropdown">
       <% if(!user) { %>
-        <button class="dropbtn">
+        <a id="link" href="/auth/login">
           Login
-        </button>
+        </a>
         <% } else {%>
           <button class="dropbtn">
-            <%= user.username %> <img id="avatar" src=<%= user.avatarURL %> 
-            width="20" 
-            height="20"></img>
+            <%= user.username %> 
           </button>
           <% } %>
         <div class="dropdown-content">
@@ -30,10 +36,9 @@
               Login
             </a>
             <% } else { %>
-              
-              Username: <%= user.username %>
-              Discriminator: <%= user.discriminator %>
-
+              <a href="/user/info">
+                Info
+              </a>
               <a href="/auth/logout">
                 Logout
               </a>
@@ -42,11 +47,17 @@
       </div>
 
 </nav>
+<% if(user) { %>
+  <style>
+    .dropdown:hover .dropdown-content {display: block;}
+  </style>
+<% } %>
 <style scoped>
   #avatar {
     border-radius: 10px;
   }
 .dropbtn {
+  font-size: 15px;
   background-color: #969696;
   color: rgb(0, 0, 0);
   padding: 10px 16px;
@@ -60,6 +71,7 @@
   border-style: solid;
   transition: background-color 2s;
   font-family: Sans-serif;
+  padding-bottom: 10px;
 }
 
 .dropdown {
@@ -83,9 +95,9 @@
   display: block;
 }
 
+
 .dropdown-content a:hover {background-color: #ddd;}
 
-.dropdown:hover .dropdown-content {display: block;}
 
 .dropdown:hover .dropbtn {background-color: #969696;}
     #linkl {

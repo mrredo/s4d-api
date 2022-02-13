@@ -18,7 +18,4 @@ module.exports = async (app: express.Application, folder: string) => {
     app.delete('/api/delete/ban/:user/', (req, res) => api("delete", "ban_user").run(app, { req, res }))
     app.delete('/api/delete/channel/:id/', (req, res) => api("delete", "channel").run(app, { req, res }))
     app.delete('/api/delete/video/:id/:video/', (req, res) => api("delete", "video").run(app, { req, res }))
-
-    //LOGIN AND LOGOUT
-    //app.get('/auth/login', (req, res) => auth('login.ts'))
 }

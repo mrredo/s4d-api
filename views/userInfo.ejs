@@ -1,0 +1,25 @@
+<%- include('partials/header') %>
+<html>
+<body>
+    <% if(user) {%>
+        <div class="userinfo">
+            Hello <%= user.username %>#<%= user.discriminator %>
+
+            <img id="avatarP" width="100" height="100" src=<%= user.avatarURL %>></img>
+
+        </div>
+        <style>
+            #avatarP {
+                border-radius: 100px;
+                display: block;
+                margin-left: auto;
+                margin-right: auto;
+                
+                
+            }
+        </style>
+    <% } else { %>
+        <a href="/auth/login">Login</a> to see your info!
+    <% } %>
+</body>
+</html>

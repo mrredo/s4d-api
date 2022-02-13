@@ -71,7 +71,7 @@ Router
 					expires_in: oauthData.expires_in + Date.now(),
 					refresh_token: oauthData.refresh_token,
 				}).save();
-				return res.redirect('/')
+				return res.redirect(session.current_url)
 			} catch(error) {
 				console.log(error)
 			}
@@ -80,7 +80,7 @@ Router
     .get('/logout', async (req: express.Request, res: express.Response) => {
 		const session = req.session as any
 		session.destroy()
-		return res.redirect("/")
+		return res.redirect(session.current_url)
     })
 module.exports.Router = Router
 

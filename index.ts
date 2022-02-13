@@ -1,3 +1,9 @@
+
+interface SessionData {
+    [key: string]: any
+    user: any
+}
+
 import express from 'express';
 const { port, mongo } = require('./env.ts')
 const app: express.Application = express();
@@ -13,7 +19,14 @@ const authModel = require('./shcemas/login_schema')
 import dotenv from 'dotenv'
 const bigyes = async () => {
   dotenv.config();
+
+
+
+
+  
+//connects to mongodb
 connect(mongo, mongoose);
+// sets ratelimiter
 const apiLimiter = rateLimit({
 	windowMs: 1 * 60 * 1000,
 	max: 20,
@@ -53,24 +66,26 @@ app.set('view engine', 'ejs');
 LoadAPI(app, "api")
 // loads the website
 app.get('/', async (req: express.Request, res: express.Response) => {
-
-  res.render('index.ejs', { user: await authModel.findOne({
-    
-  }) });
+  const session = req.session as any
+  res.render('index.ejs', { user: session.user });
 });
 app.get('/docs', function(req: express.Request, res: express.Response) {
-  res.render('MainDocsPage.ejs');
+  const session = req.session as any
+  res.render('MainDocsPage.ejs', { user: session.user });
 });
 app.get('/docs/:type', async function(req: express.Request, res: express.Response) {
+  const session = req.session as any
   let type = req.params.type
-  if(type == "get") return res.render("docs/get/get.ejs")
+  if(type == "get") return res.render("docs/get/get.ejs", { user: session.user })
     else return res.redirect("/docs/get")
 })
 app.get('/qna', function(req: express.Request, res: express.Response) {
-  res.render('qna.ejs');
+  const session = req.session as any
+  res.render('qna.ejs', { user: session.user });
 });
 app.get('/rules', function(req: express.Request, res: express.Response) {
-  res.render('rules.ejs');
+  const session = req.session as any
+  res.render('rules.ejs', { user: session.user });
 });
 //routers
 router(app);

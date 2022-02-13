@@ -11,27 +11,46 @@
     <li id="linkl"><a href="/qna" id="link">
         QNA
     </a></li>
+    
     <div class="dropdown">
-        <button class="dropbtn">Dropdown</button>
+      <% if(!user) { %>
+        <button class="dropbtn">
+          Login
+        </button>
+        <% } else {%>
+          <button class="dropbtn">
+            <%= user.username %> <img id="avatar" src=<%= user.avatarURL %> 
+            width="20" 
+            height="20"></img>
+          </button>
+          <% } %>
         <div class="dropdown-content">
-          <% if(typeof user !== 'string') {%>
-            <%= user.username %>
-          <% } else { %>
+          <% if(!user) { %>
             <a href="/auth/login">
               Login
             </a>
-          <% } %>
-          
-          <a href="#">Link 2</a>
+            <% } else { %>
+              
+              Username: <%= user.username %>
+              Discriminator: <%= user.discriminator %>
+
+              <a href="/auth/logout">
+                Logout
+              </a>
+              <% } %>
         </div>
       </div>
+
 </nav>
 <style scoped>
-    
+  #avatar {
+    border-radius: 10px;
+  }
 .dropbtn {
   background-color: #969696;
   color: rgb(0, 0, 0);
   padding: 10px 16px;
+  max-width: 200px;
   text-align: center;
   text-decoration: none;
   display: inline-block;

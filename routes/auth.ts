@@ -4,7 +4,6 @@ const Router = express.Router()
 const config = require('../env')
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 const fetch = require('node-fetch')
-import localForage from 'localforage'
 /*
 data for login schema
  _id: req(String), // user id
@@ -25,10 +24,8 @@ interface Code {
 Router
     .get('/login', async (req: express.Request, res: express.Response) => {
 		const { code } = req.query as unknown as Code;
-		console.log(code)
-		
+		const session = req.session as any
         if(code) {
-			console.log("wdwdwd")
 			try {
 				const oauthResult = await fetch('https://discord.com/api/oauth2/token', {
 					method: 'POST',
@@ -57,24 +54,22 @@ Router
 				const dataUserMongo = await authModel.findOne({
 					_id: userData.id
 				}) 
-				localForage.setItem("userInfo", {
+				session.user = {}
+				session.user = {
+					id: userData.id,
 					username: userData.username,
-					discrimination: userData.discriminator,
+					discriminator: userData.discriminator,
 					avatar: userData.avatar,
-					language: userData.locale
-				})
+					locale: userData.locale,
+					avatarURL: `https://cdn.discordapp.com/avatars/${userData.id}/${userData.avatar}`
+				}
+				console.log(session.user)
 				if(!dataUserMongo) new authModel({
 					_id: userData.id,
 					access_token: oauthData.access_token,
 					token_type: oauthData.token_type,
 					expires_in: oauthData.expires_in + Date.now(),
 					refresh_token: oauthData.refresh_token,
-					user: {
-						username: userData.username,
-						discrimination: userData.discriminator,
-						avatar: userData.avatar,
-						language: userData.locale
-					}
 				}).save();
 				return res.redirect('/')
 			} catch(error) {
@@ -83,7 +78,9 @@ Router
 			} else return res.redirect("https://discord.com/api/oauth2/authorize?client_id=930543540432437298&redirect_uri=http%3A%2F%2Flocalhost%3A8080%2Fauth%2Flogin&response_type=code&scope=identify")
             })
     .get('/logout', async (req: express.Request, res: express.Response) => {
-		
+		const session = req.session as any
+		session.destroy()
+		return res.redirect("/")
     })
 module.exports.Router = Router
 

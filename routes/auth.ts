@@ -2,8 +2,8 @@ import express from 'express'
 const authModel = require('../shcemas/login_schema')
 const Router = express.Router()
 const config = require('../env')
-const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 const fetch = require('node-fetch')
+const genApiKey = require("../functions/generateApiKey")
 /*
 data for login schema
  _id: req(String), // user id
@@ -54,6 +54,16 @@ Router
 				const dataUserMongo = await authModel.findOne({
 					_id: userData.id
 				}) 
+				const { hashApiKey, key } = genApiKey();
+				console.log(hashApiKey)
+				if(!dataUserMongo) new authModel({
+					_id: userData.id,
+					access_token: oauthData.access_token,
+					token_type: oauthData.token_type,
+					expires_in: oauthData.expires_in + Date.now(),
+					refresh_token: oauthData.refresh_token,
+					api_key: hashApiKey
+				}).save();
 				session.user = {}
 				session.user = {
 					id: userData.id,
@@ -61,16 +71,12 @@ Router
 					discriminator: userData.discriminator,
 					avatar: userData.avatar,
 					locale: userData.locale,
-					avatarURL: `https://cdn.discordapp.com/avatars/${userData.id}/${userData.avatar}`
+					avatarURL: `https://cdn.discordapp.com/avatars/${userData.id}/${userData.avatar}`,
+					api_key: dataUserMongo.api_key ?? "none"
 				}
 				console.log(session.user)
-				if(!dataUserMongo) new authModel({
-					_id: userData.id,
-					access_token: oauthData.access_token,
-					token_type: oauthData.token_type,
-					expires_in: oauthData.expires_in + Date.now(),
-					refresh_token: oauthData.refresh_token,
-				}).save();
+				
+				
 				return res.redirect(session.current_url)
 			} catch(error) {
 				console.log(error)

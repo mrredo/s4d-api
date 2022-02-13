@@ -1,9 +1,3 @@
-
-interface SessionData {
-    [key: string]: any
-    user: any
-}
-
 import express from 'express';
 const { port, mongo } = require('./env.ts')
 const app: express.Application = express();
@@ -18,12 +12,7 @@ const LoadAPI = require('./functions/LoadAPI');
 const authModel = require('./shcemas/login_schema')
 import dotenv from 'dotenv'
 const bigyes = async () => {
-  dotenv.config();
-
-
-
-
-  
+  dotenv.config()
 //connects to mongodb
 connect(mongo, mongoose);
 // sets ratelimiter

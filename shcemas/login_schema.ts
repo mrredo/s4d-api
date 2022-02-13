@@ -11,11 +11,6 @@ const channelSchema = new mongoose.Schema({
     token_type: req(String),
     expires_in: req(Number),
     refresh_token: req(String),
-    user: {
-        username: req(String),
-        discrimination: req(String),
-        avatar: req(String),
-        language: req(String)
-    }
+    api_key: req(String)
 }, { versionKey: false})
 export = mongoose.model('api_users', channelSchema);

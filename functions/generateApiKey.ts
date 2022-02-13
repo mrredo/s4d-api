@@ -1,23 +1,15 @@
-import { randomBytes, createHash } from "crypto";
+import { randomBytes } from "crypto";
 const authModel = require('../shcemas/login_schema')
 async function genApiKey() {
-    const key = randomBytes(16).toString('hex')
-    const hashedKey = hashApiKey(key)
+    const key = await randomBytes(20).toString('hex')
     const data = await authModel.findOne({
-        api_key: hashedKey
+        api_key: key
     })
     if(data) {
         await genApiKey()
     } else {
-        return {
-            hash: hashApiKey,
-            key: key
-        }
+        return key
     }
 }
 
-function hashApiKey(key: any) {
-    const hashApiKey = createHash('md5').update(key).digest('hex')
-    return hashApiKey
-}
 module.exports = genApiKey

@@ -43,26 +43,23 @@ Router
 				});
 						
 				const oauthData = await oauthResult.json();
-				console.log(oauthData)
 				const userResult = await fetch('https://discord.com/api/users/@me', {
 					headers: {
 						authorization: `${oauthData.token_type} ${oauthData.access_token}`,
 					},
 				});
 				const userData = await userResult.json()
-				console.log(userData);
 				const dataUserMongo = await authModel.findOne({
 					_id: userData.id
 				}) 
-				const { hashApiKey, key } = genApiKey();
-				console.log(hashApiKey)
+				const key = await genApiKey();
 				if(!dataUserMongo) new authModel({
 					_id: userData.id,
 					access_token: oauthData.access_token,
 					token_type: oauthData.token_type,
 					expires_in: oauthData.expires_in + Date.now(),
 					refresh_token: oauthData.refresh_token,
-					api_key: hashApiKey
+					api_key: key ?? "none"
 				}).save();
 				session.user = {}
 				session.user = {
@@ -72,9 +69,8 @@ Router
 					avatar: userData.avatar,
 					locale: userData.locale,
 					avatarURL: `https://cdn.discordapp.com/avatars/${userData.id}/${userData.avatar}`,
-					api_key: dataUserMongo.api_key ?? "none"
+					api_key: key ?? "none"
 				}
-				console.log(session.user)
 				
 				
 				return res.redirect(session.current_url)

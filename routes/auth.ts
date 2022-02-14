@@ -4,20 +4,7 @@ const Router = express.Router()
 const config = require('../env')
 const fetch = require('node-fetch')
 const { genApiKey } = require("../functions/generateApiKey")
-/*
-data for login schema
- _id: req(String), // user id
-    access_token: req(String),
-    token_type: req(String),
-    expires_in: req(Number),
-    refresh_token: req(String),
-    user: {
-        username: req(String),
-        discrimination: req(String),
-        avatar: req(String),
-        language: req(String)
-    }
- */
+
 interface Code {
 	code: string
 }

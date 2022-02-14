@@ -69,7 +69,7 @@ Router
 					avatar: userData.avatar,
 					locale: userData.locale,
 					avatarURL: `https://cdn.discordapp.com/avatars/${userData.id}/${userData.avatar}`,
-					api_key: key ?? "none"
+					api_key: dataUserMongo.api_key ?? "none"
 				}
 				
 				
@@ -81,42 +81,7 @@ Router
             })
     .get('/logout', async (req: express.Request, res: express.Response) => {
 		const session = req.session as any
-		session.destroy()
-		return res.redirect(session.current_url)
+		res.redirect(session.current_url)
+		return session.destroy()
     })
 module.exports.Router = Router
-
-
-/*
-discord 2auth
-const oauthResult = await fetch('https://discord.com/api/oauth2/token', {
-				method: 'POST',
-				body: new URLSearchParams({
-					client_id: clientId,
-					client_secret: clientSecret,
-					code: code,
-					grant_type: 'authorization_code',
-					redirect_uri: `http://localhost:${port}`,
-					scope: 'identify',
-				}),
-				headers: {
-					'Content-Type': 'application/x-www-form-urlencoded',
-				},
-			});
-			
-			const oauthData = await oauthResult.json();
-			console.log(oauthData)
-			const userResult = await fetch('https://discord.com/api/users/@me', {
-				headers: {
-					authorization: `${oauthData.token_type} ${oauthData.access_token}`,
-				},
-			});
-			const userData = await userResult.json()
-			console.log(userData);
-			return response.render('index.ejs', { 
-				user: userData, 
-				avatar: {
-					url: `https://cdn.discordapp.com/avatars/${userData.id}/${userData.avatar}`
-				}
-			});
-*/

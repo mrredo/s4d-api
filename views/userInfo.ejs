@@ -5,14 +5,40 @@
         <div class="userinfo">
             <img id="avatarP" width="100" height="100" src=<%= user.avatarURL %>></img>
             <p id="username">Hello <%= user.username %>#<%= user.discriminator %> <br>
-            <p id="apiKey">Your api key: ********************</p>
+            <p id="apiKey">Your api key: <input id="pass" type="password" disabled value="********************"> <p>
             <div class="center">
-                <button id="keybtn">Copy key</button><button id="hidebtn">Unhide</button>
+
+                <button onclick="copy_text()" id="keybtn">Copy key</button><button onclick="switch_text()" id="hidebtn">Unhide</button>
             </div>
             </p>
 
 
         </div>
+        <script>
+        function copy_text() {
+            const text = "<%= user.api_key %>"
+            if(navigator.clipboard) return navigator.clipboard.writeText(text);
+            else if(window.clipboardData) return window.clipboardData.setData("Text", text);
+    }
+            
+        
+        function switch_text() {
+            var button = document.getElementById("hidebtn")
+            var input = document.getElementById("pass")
+            switch(input.type) {
+                case "password":
+                    input.value = "<%= user.api_key %>"
+                    input.type = "text"
+                    button.textContent = "Hide"
+                break;
+                case "text":
+                    input.value = "********************"
+                    input.type = "password"
+                    button.textContent = "Unhide"
+                break;
+            }
+        }
+        </script>
         <style>
             @import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
             #avatarP {
@@ -40,7 +66,8 @@
                 font-family: 'Roboto', sans-serif;
             }
             .center {
-                margin-left: 600px;
+                margin-left: 800px;
+                margin-right: 700px;
                 align-items: center;
             }
         </style>

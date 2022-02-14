@@ -7,15 +7,17 @@ module.exports = {
     path: "video_id_video",
     run: async (app: express.Application, object: { req: express.Request, res: express.Response}) => {
         const { req, res } = object
-            const header: any = req.headers;
+            const header = req.headers;
             const user: string = req.params.id;
             const video: string = req.params.video;
-            const idregex = new RegExp("[0-9]\d{17,18}")
-            const videoID = new RegExp("[0-9]|[0-9]\d{1,2}")
-            if(header.key != key) return result.error(res,{
-                "message": "OWNER_ONLY",
-                "code": "none"
-            });
+            const idregex: RegExp = new RegExp("[0-9]\d{17,18}")
+            const videoID: RegExp = new RegExp("[0-9]|[0-9]\d{1,2}")
+            if(header.key != key) return res.status(401).send({
+                "error": {
+                  "message": "OWNER_ONLY",
+                  "code": "none"
+                }
+              });
             if(isNaN(Number(user))) return result.error(res,{
                 "message": "USER_ID_MUST_BE_NUMBER",
                 "code": "400"

@@ -1,15 +1,16 @@
 export {};
 import express from 'express';
 import channelModel from '../../../shcemas/channelSchema'
+import authModel from '../../../shcemas/login_schema';
 const { key } = require('../../../env');
 module.exports = {
     path: "channel_id",
     run: async (app: express.Application, object: { req: express.Request, res: express.Response}) => {
       const { req, res } = object
-      const header: any = req.headers.key
+      const header: any = req.headers
       const user: string = req.params.id;
       const idregex = new RegExp("[0-9]\d{17,18}")
-      if(header != key) return res.send({
+      if(header.key != key) return res.status(401).send({
         "error": {
           "message": "OWNER_ONLY",
           "code": "none"

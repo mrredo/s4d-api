@@ -12,14 +12,12 @@ module.exports = {
         const api_key: any = await authModel.findOne({
             api_key: header.api_key
           })
-          console.log(header.key != key)
-          console.log(api_key == null == true)
-          if(!api_key) return res.status(401).send({
-            "error": {
-              "message": "NOT_UNAUTHORIZED",
-              "code": "401"
-            }
-          });
+        if(!api_key) return res.status(401).send({
+           "error": {
+            "message": "NOT_UNAUTHORIZED",
+            "code": "401"
+          }
+        });
             const arr = await banModel.find()
             return res.json({ bannedUsers: arr[0].bannedUsers} || [])
     }

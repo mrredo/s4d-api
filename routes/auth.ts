@@ -3,7 +3,7 @@ const authModel = require('../shcemas/login_schema')
 const Router = express.Router()
 const config = require('../env')
 const fetch = require('node-fetch')
-const genApiKey = require("../functions/generateApiKey")
+const { genApiKey } = require("../functions/generateApiKey")
 /*
 data for login schema
  _id: req(String), // user id
@@ -73,7 +73,7 @@ Router
 				}
 				
 				
-				return res.redirect(session.current_url)
+				return res.redirect(session.current_url ?? "/")
 			} catch(error) {
 				console.log(error)
 			}
@@ -81,7 +81,7 @@ Router
             })
     .get('/logout', async (req: express.Request, res: express.Response) => {
 		const session = req.session as any
-		res.redirect(session.current_url)
+		res.redirect(session.current_url ?? "/")
 		return session.destroy()
     })
 module.exports.Router = Router

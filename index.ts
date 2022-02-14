@@ -9,7 +9,7 @@ const rateLimit = require('express-rate-limit')
 import connect from './functions/mongo'
 const mongoose = require('mongoose');
 const LoadAPI = require('./functions/LoadAPI');
-const authModel = require('./shcemas/login_schema')
+const { regenApiKey } = require("./functions/generateApiKey")
 import dotenv from 'dotenv'
 const bigyes = async () => {
   dotenv.config()
@@ -85,7 +85,10 @@ app.get('/rules', function(req: express.Request, res: express.Response) {
 app.get('/user/info', function(req: express.Request, res: express.Response) {
   const session = req.session as any
   session.current_url = '/user/info'
-  res.render('userInfo.ejs', { user: session.user });
+
+  res.render('userInfo.ejs', { 
+    user: session.user
+  });
 });
 //routers
 router(app);

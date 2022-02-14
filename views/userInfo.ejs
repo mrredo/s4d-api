@@ -8,20 +8,20 @@
             <p id="apiKey">Your api key: <input id="pass" type="password" disabled value="********************"> <p>
             <div class="center">
 
-                <button onclick="copy_text()" id="keybtn">Copy key</button><button onclick="switch_text()" id="hidebtn">Unhide</button>
+                <button onclick="copy_text()" id="keybtn">Copy key</button>
+                <button onclick="switch_text()" id="hidebtn">Unhide</button>
+                <div class="link">
+                    <a href="/key/regen" style="margin-top: 5px;" id="regenA">Regenerate API key</a>
+                </div>
             </div>
-            </p>
-
-
+        </p>
         </div>
         <script>
         function copy_text() {
             const text = "<%= user.api_key %>"
             if(navigator.clipboard) return navigator.clipboard.writeText(text);
             else if(window.clipboardData) return window.clipboardData.setData("Text", text);
-    }
-            
-        
+        }
         function switch_text() {
             var button = document.getElementById("hidebtn")
             var input = document.getElementById("pass")
@@ -41,6 +41,15 @@
         </script>
         <style>
             @import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+            .link {
+                margin-top: 8px;
+            }
+            #regenA {
+                text-decoration: none;
+                border-style: solid;
+                border-radius: 5px;
+                padding: 2 2 2 2;
+            }
             #avatarP {
                 border-radius: 100px;
                 border-color: black;
@@ -66,9 +75,9 @@
                 font-family: 'Roboto', sans-serif;
             }
             .center {
-                margin-left: 800px;
-                margin-right: 700px;
-                align-items: center;
+                width: 9%;
+                margin: 0 auto;
+                
             }
         </style>
     <% } else { %>

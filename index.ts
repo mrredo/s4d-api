@@ -1,5 +1,5 @@
 import express from 'express';
-const { port, mongo } = require('./env.ts')
+const { port, mongo, repl_redirect } = require('./env.ts')
 const app: express.Application = express();
 import session from 'express-session'
 import router from './router'
@@ -86,7 +86,8 @@ app.get('/user/info', function(req: express.Request, res: express.Response) {
   session.current_url = '/user/info'
 
   res.render('userInfo.ejs', { 
-    user: session.user
+    user: session.user,
+    url: repl_redirect
   });
 });
 //routers

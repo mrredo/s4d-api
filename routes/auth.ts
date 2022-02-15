@@ -21,7 +21,7 @@ Router
 					client_secret: config.client_secret,
 					code: code,
 					grant_type: 'authorization_code',
-					redirect_uri: `http://localhost:${config.port}/auth/login`,
+					redirect_uri: `${config.repl_url}/auth/login`,
 					scope: 'identify',
 					}),
 					headers: {
@@ -64,7 +64,7 @@ Router
 			} catch(error) {
 				console.log(error)
 			}
-			} else return res.redirect("https://discord.com/api/oauth2/authorize?client_id=930543540432437298&redirect_uri=http%3A%2F%2Flocalhost%3A8080%2Fauth%2Flogin&response_type=code&scope=identify")
+			} else return res.redirect(config.repl_redirect)
             })
     .get('/logout', async (req: express.Request, res: express.Response) => {
 		const session = req.session as any

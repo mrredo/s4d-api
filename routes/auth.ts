@@ -31,7 +31,6 @@ Router
 				
 				const oauthData = await oauthResult.json();
 				if(oauthData.error_description === 'Invalid "code" in request.') return res.redirect(config.local_redirect)
-				console.log(oauthData)
 				const userResult = await fetch('https://discord.com/api/users/@me', {
 					headers: {
 						authorization: `${oauthData.token_type} ${oauthData.access_token}`,

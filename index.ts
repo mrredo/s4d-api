@@ -9,7 +9,6 @@ const rateLimit = require('express-rate-limit')
 import connect from './functions/mongo'
 const mongoose = require('mongoose');
 const LoadAPI = require('./functions/LoadAPI');
-const { regenApiKey } = require("./functions/generateApiKey")
 import dotenv from 'dotenv'
 const bigyes = async () => {
   dotenv.config()
